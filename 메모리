@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>메모리 게임</title>
+<style>
+  .game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .card {
+    width: 100px;
+    height: 100px;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .hidden {
+    background-color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div id="game-board" class="game-board">
+  <!-- 게임 카드가 여기에 들어갈 것입니다. -->
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const gameBoard = document.getElementById('game-board');
+  const images = ['뉴미1', '뉴미2', '디지1', '디지2', '소리1', '소리2', '영상1', '영상2', '인쇄1', '인쇄2'];
+  let cardsChosen = [];
+  let cardsChosenIds = [];
+
+  // 게임 보드를 생성하는 함수
+  function createBoard() {
+    images.sort(() => 0.5 - Math.random());
+    for (let i = 0; i < images.length; i++) {
+      const card = document.createElement('div');
+      card.setAttribute('class', 'card');
+      card.setAttribute('data-id', i);
+      card.addEventListener('click', flipCard);
+      gameBoard.appendChild(card);
+    }
+  }
+
+  // 카드를 뒤집는 함수
+  function flipCard() {
+    const cardId = this.getAttribute('data-id');
+    cardsChosen.push(images[cardId]);
+    cardsChosenIds.push(cardId);
+    this.classList.add('hidden');
+    if (cardsChosen.length === 2) {
+      setTimeout(checkForMatch, 500);
+    }
+  }
+
+  // 일치하는 카드를 확인하는 함수
+  function checkForMatch() {
+    const cards = document.querySelectorAll('.card');
+    const firstId = cardsChosenIds[0];
+    const secondId = cardsChosenIds[1];
+
+    if (cardsChosen[0] === cardsChosen[1]) {
+      alert('찾았습니다!');
+      cards[firstId].style.visibility = 'hidden';
+      cards[secondId].style.visibility = 'hidden';
+    } else {
+      cards[firstId].classList.remove('hidden');
+      cards[secondId].classList.remove('hidden');
+    }
+    cardsChosen = [];
+    cardsChosenIds = [];
+  }
+
+  createBoard();
+});
+</script>
+
+</body>
+</html>
